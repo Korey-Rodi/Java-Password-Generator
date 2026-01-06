@@ -2,16 +2,18 @@ import java.util.Scanner;
 import java.security.SecureRandom;
 
 public class Password {
-    final public static String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    final public static String NUMBERS = "0123456789";
-    final public static String SYMBOLS = "!@#$%^&*()-_=+[]{}|;:',.<>";
+    public static final String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    public static final String NUMBERS = "0123456789";
+    public static final String SYMBOLS = "!@#$%^&*()-_=+[]{}|;:',.<>";
+    private static final Scanner scanner = new Scanner(System.in);
 
 
-    public static String GeneratePassword(String includedCharacters) {
 
+
+    public static String generatePassword(String includedCharacters, int passwordLength) {
         SecureRandom random = new SecureRandom();
         StringBuilder password = new StringBuilder();
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < passwordLength; i++) {
         int randomIndex = random.nextInt(includedCharacters.length());
         password.append(includedCharacters.charAt(randomIndex));
         }
@@ -19,29 +21,38 @@ public class Password {
     }
 
 
-    public static String CheckDesiredPassword(String includeLetters, String includeNumbers, 
+    public static String checkDesiredPassword(String includeLetters, String includeNumbers, 
         String includeSymbols){
         String passwordCharacters = "";
-            if (includeLetters.equalsIgnoreCase("y")) {
+            if (includeLetters.equalsIgnoreCase("y") || includeLetters.equalsIgnoreCase("yes")) {
                 passwordCharacters += LETTERS;
             }
-            if (includeNumbers.equalsIgnoreCase("y")) {
+            if (includeNumbers.equalsIgnoreCase("y" ) || includeNumbers.equalsIgnoreCase("yes")) {
                 passwordCharacters += NUMBERS;
             }
-            if (includeSymbols.equalsIgnoreCase("y")) {
+            if (includeSymbols.equalsIgnoreCase("y") || includeSymbols.equalsIgnoreCase("yes")) {
                 passwordCharacters += SYMBOLS;
-            }
-            if (passwordCharacters.length() == 0) {
-                System.out.println("You must select at least one character type!");
-                System.out.println("Please try again.");
-                PasswordCriteria();
-
             }
         return passwordCharacters;
 
     }
-    public static String PasswordCriteria() {
-        Scanner scanner = new Scanner(System.in);
+    public static int passwordLength() {
+        int passwordLength;
+        System.out.print("Length of password? ");
+        passwordLength = scanner.nextInt();
+        scanner.nextLine();
+        while (passwordLength < 12  || passwordLength > 20) {
+            System.out.println("Password length must be between 12 and 20 characters.");
+            System.out.println("Please enter a valid length: ");
+            passwordLength = scanner.nextInt();
+            scanner.nextLine();
+        }
+        return passwordLength;
+    }
+
+    public static String passwordMakeUp() {
+        String includedCharacters = "";
+        while (includedCharacters.length() == 0) {
         System.out.println("=======================================");
         System.out.println("Enter Y/N for each of the following criteria:");
         System.out.print("Include Letters? ");
@@ -50,17 +61,23 @@ public class Password {
         String includeNumbers = scanner.nextLine();
         System.out.print("Include Symbols? ");
         String includeSymbols = scanner.nextLine(); 
-        String includedCharacters = CheckDesiredPassword(includeLetters,includeNumbers, 
+        includedCharacters = checkDesiredPassword(includeLetters,includeNumbers, 
             includeSymbols);
-        scanner.close();
+        if (includedCharacters.length() == 0) {
+                System.out.println("You must select at least one character type!");
+                System.out.println("Please try again.");
+        }
+        }
         return includedCharacters;
     }
     public static void main(String[] args) {
         System.out.println("=======================================");
         System.out.println("Welcome to the Java password generator!");
-        String includedCharacters = PasswordCriteria();
-        String GeneratedPassword = GeneratePassword(includedCharacters);
+        int passwordLength = passwordLength();
+        String includedCharacters = passwordMakeUp();
+        String GeneratedPassword = generatePassword(includedCharacters,passwordLength);
         System.out.println("Generated Password: " + GeneratedPassword);
+        scanner.close();
 
     }
 }
