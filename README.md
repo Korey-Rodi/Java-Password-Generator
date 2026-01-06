@@ -1,2 +1,11 @@
-# Java-Password-Generator
-This is a command line password generator written in java
+# Java Password Generator
+
+# Screenshots
+
+# Video Demo
+
+# What is it?
+
+# Why did I make it?
+
+# What do I want to add?
